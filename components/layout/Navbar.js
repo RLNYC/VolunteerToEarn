@@ -52,9 +52,13 @@ function Navbar({ account, setAccount}) {
         <Menu.Item key="landing">
           <Link href="/">🏠 Home</Link>
         </Menu.Item>
+        <Menu.Item key="nonprofit">
+          <Link href="/nonprofit">👥 Nonprofit</Link>
+        </Menu.Item>
       </Menu>
       <div style={styles.headerRight}>
       <Button
+        className='primary-bg-color'
         style={{ margin: '0 1rem'}}
         type="primary"
       >

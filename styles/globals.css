@@ -14,3 +14,15 @@ a {
 * {
   box-sizing: border-box;
 }
+
+.primary-bg-color {
+  background-color: #3AA628 !important;
+}
+
+.primary-color {
+  color: #3AA628 !important;
+}
+
+.white-bg-color {
+  background-color: white !important
+}
