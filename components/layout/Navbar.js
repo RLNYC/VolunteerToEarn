@@ -55,6 +55,9 @@ function Navbar({ account, setAccount}) {
         <Menu.Item key="nonprofit">
           <Link href="/nonprofit">👥 Nonprofit</Link>
         </Menu.Item>
+        <Menu.Item key="myaccount">
+          <Link href="/myaccount">👥 My Account</Link>
+        </Menu.Item>
       </Menu>
       <div style={styles.headerRight}>
       <Button
