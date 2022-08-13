@@ -56,4 +56,29 @@ contract VolunteerNFT is ERC721URIStorage {
     _volunteerNFT.isRedeemed = true;
     volunteerDataList[_id] = _volunteerNFT;
   }
+
+  function fetchUserVolunteerNFTs(address _userAddress) public view returns (VolunteerData[] memory) {
+    uint totalNFTCount = nftIds.current();
+    uint itemCount = 0;
+    uint currentIndex = 0;
+
+    for (uint i = 0; i < totalNFTCount; i++) {
+      if (volunteerDataList[i + 1].recipient == _userAddress) {
+        itemCount += 1;
+      }
+    }
+
+    VolunteerData[] memory items = new VolunteerData[](itemCount);
+
+    for (uint i = 0; i < totalNFTCount; i++) {
+      if (volunteerDataList[i + 1].recipient == _userAddress) {
+        uint currentId = i + 1;
+        VolunteerData storage currentNFT = volunteerDataList[currentId];
+        items[currentIndex] = currentNFT;
+        currentIndex += 1;
+      }
+    }
+
+    return items;   
+  }
 }
