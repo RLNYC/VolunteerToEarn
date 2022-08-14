@@ -15,16 +15,22 @@ const tailLayout = {
   },
 };
 
-function MintNFT() {
+function MintNFT({ volunteerContract }) {
   const [form] = Form.useForm();
 
   const [loading, setLoading] = useState(false);
+  const [transaction, setTransaction] = useState("");
 
   const onFinish = async (values) => {
     try{
       setLoading(true);
       console.log(values);
 
+      const transaction = await volunteerContract.mintVolunteerNFT(values.volunteerHours, values.charities, values.volunteerAddress);
+      const tx = await transaction.wait();
+      console.log(tx);
+
+      setTransaction(tx.transactionHash);
       setLoading(false);
     } catch(error) {
       console.error(error);
@@ -88,6 +94,7 @@ function MintNFT() {
             </Button>
           </Form.Item>
         </Form>
+        {transaction && <p>Success, {transaction}</p>}
       </Card>
     </div>
   )

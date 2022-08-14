@@ -1,6 +1,11 @@
 import React from 'react';
 import Link from 'next/link';
 import { Layout, Menu, Button } from 'antd';
+import { ethers } from 'ethers';
+import Web3Modal from 'web3modal';
+
+import ERC20Contract from '../../build/contracts/ERC20Token.json';
+import VolunteerToEarnContract from '../../build/contracts/VolunteerNFT.json';
 
 const styles = {
   header: {
@@ -31,9 +36,24 @@ const styles = {
   }
 };
 
-function Navbar({ account, setAccount}) {
+function Navbar({ account, setAccount, setDoGoodContract, setVolunteerContract }) {
+  const connetToWallet = async () => {
+    const web3Modal = new Web3Modal();
+    const connection = await web3Modal.connect();
+    const provider = new ethers.providers.Web3Provider(connection);  
+    console.log(provider);
 
+    const signer = provider.getSigner();
+    const address = await signer.getAddress();
+    setAccount(address);
 
+    let contract1 = new ethers.Contract(process.env.NEXT_PUBLIC_DOGOODTOKEN_ADDRESS, ERC20Contract.abi, signer);
+    setDoGoodContract(contract1);
+
+    let contract2 = new ethers.Contract(process.env.NEXT_PUBLIC_VOLUNTEERTOEARN_ADDRESS, VolunteerToEarnContract.abi, signer);
+    setVolunteerContract(contract2);
+  }
+  
   return (
     <Layout.Header style={styles.header}>
       <p style={styles.logo}>VolunteerToEarn</p>
@@ -64,6 +84,7 @@ function Navbar({ account, setAccount}) {
         className='primary-bg-color'
         style={{ margin: '0 1rem'}}
         type="primary"
+        onClick={connetToWallet}
       >
         { account ? account.substring(0, 7) + '...' + account.substring(35, 42) : "Connect to Wallet" }
       </Button>

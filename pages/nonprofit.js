@@ -2,16 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { Layout } from 'antd';
 
 import Sidebar from '../components/nonprofit/Sidebar';
-import GovernanceTokens from '../components/nonprofit/MintNFT';
+import MintNFT from '../components/nonprofit/MintNFT';
 
-function Nonprofit({ account, voteContract, gContract }) {
+function Nonprofit({ account, volunteerContract }) {
   const [currentTab, setCurrentTab] = useState("Mint NFT");
 
   let content;
 
   switch (currentTab) {
     case "Mint NFT":
-      content = <GovernanceTokens account={account} voteContract={voteContract} gContract={gContract} />;
+      content = <MintNFT account={account} volunteerContract={volunteerContract} />;
       break;
     default:
       content = 'Page not found';

@@ -4,14 +4,14 @@ import { Layout } from 'antd';
 import Sidebar from '../components/account/Sidebar';
 import Overview from '../components/account/Overview';
 
-function Myaccount({ account }) {
-  const [currentTab, setCurrentTab] = useState("Mint NFT");
+function Myaccount({ account, volunteerContract }) {
+  const [currentTab, setCurrentTab] = useState("Overview");
 
   let content;
 
   switch (currentTab) {
-    case "Mint NFT":
-      content = <Overview account={account} />;
+    case "Overview":
+      content = <Overview account={account} volunteerContract={volunteerContract} />;
       break;
     default:
       content = 'Page not found';
