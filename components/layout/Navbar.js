@@ -78,6 +78,9 @@ function Navbar({ account, setAccount, setDoGoodContract, setVolunteerContract }
         <Menu.Item key="myaccount">
           <Link href="/myaccount">👥 My Account</Link>
         </Menu.Item>
+        <Menu.Item key="reward">
+          <Link href="/reward">💰 Reward</Link>
+        </Menu.Item>
       </Menu>
       <div style={styles.headerRight}>
       <Button
