@@ -85,8 +85,8 @@ function MintNFT({ volunteerContract }) {
             <Input />
           </Form.Item>
 
-          <Form.Item {...tailLayout} loading={loading}>
-            <Button type="primary" htmlType="submit" className="primary-bg-color">
+          <Form.Item {...tailLayout}>
+            <Button type="primary" htmlType="submit" className="primary-bg-color" loading={loading}>
               Mint
             </Button>
             <Button htmlType="button" onClick={onReset}>

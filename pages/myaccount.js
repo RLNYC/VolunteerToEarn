@@ -4,14 +4,14 @@ import { Layout } from 'antd';
 import Sidebar from '../components/account/Sidebar';
 import Overview from '../components/account/Overview';
 
-function Myaccount({ account, volunteerContract }) {
+function Myaccount({ account, volunteerContract, doGoodContract }) {
   const [currentTab, setCurrentTab] = useState("Overview");
 
   let content;
 
   switch (currentTab) {
     case "Overview":
-      content = <Overview account={account} volunteerContract={volunteerContract} />;
+      content = <Overview account={account} volunteerContract={volunteerContract} doGoodContract={doGoodContract} />;
       break;
     default:
       content = 'Page not found';

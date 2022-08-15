@@ -1,61 +1,49 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Table, Form, Checkbox, Button  } from 'antd';
 
-
-const layout = {
-  labelCol: {
-    span: 5,
-  },
-  style: { maxWidth: "700px" }
-};
-
-const tailLayout = {
-  wrapperCol: {
-    offset: 16,
-    span: 16,
-  },
-};
-
-const columns = [
-  {
-    title: "ID",
-    dataIndex: "id",
-    key: "id",
-    render: (id) => <p>{id.toString()}</p>,
-  },
-  {
-    title: "Charity",
-    dataIndex: "charity",
-    key: "charity",
-    render: (charity) => <p>{charity}</p>,
-  },
-  {
-    title: "Hours",
-    dataIndex: "hour",
-    key: "hour",
-    render: (hour) => <p>{hour.toString()}</p>,
-  },
-  {
-    title: 'Redeem',
-    dataIndex: "isRedeemed",
-    key: 'isRedeemed',
-    fixed: 'right',
-    width: 100,
-    render: (isRedeemed) => <Checkbox disabled={isRedeemed} />,
-  },
-];
-
-function Overview({ account, volunteerContract }) {
-  const [form] = Form.useForm();
+function Overview({ account, volunteerContract, doGoodContract }) {
+  const columns = [
+    {
+      title: "ID",
+      dataIndex: "id",
+      key: "id",
+      render: (id) => <p>{id.toString()}</p>,
+    },
+    {
+      title: "Charity",
+      dataIndex: "charity",
+      key: "charity",
+      render: (charity) => <p>{charity}</p>,
+    },
+    {
+      title: "Hours",
+      dataIndex: "hour",
+      key: "hour",
+      render: (hour) => <p>{hour.toString()}</p>,
+    },
+    {
+      title: 'Redeem',
+      fixed: 'right',
+      width: 100,
+      render: (nft) => <Checkbox disabled={nft.isRedeemed} onChange={handleCheckBox} value={nft.id.toString()}/>,
+    },
+  ];
 
   const [volunteerNFTs, setVolunteerNFTs] = useState([]);
+  const [goGoodBalance, setDoGoodBalance] = useState(0);
+  const [selectNFT, setSelectNFT] = useState("");
+  const [transaction, setTransaction] = useState("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if(volunteerContract) fetchNFTs();
   }, [volunteerContract])
 
-  const fetchNFTs = async (values) => {
+  useEffect(() => {
+    if(doGoodContract) getDoGoodTokenBalance();
+  }, [doGoodContract])
+
+  const fetchNFTs = async () => {
     try{
       setLoading(true);
       const nfts = await volunteerContract.fetchUserVolunteerNFTs(account);
@@ -68,21 +56,38 @@ function Overview({ account, volunteerContract }) {
       setLoading(false);
     }
   };
+
+  const getDoGoodTokenBalance = async () => {
+    try{
+      const balance = await doGoodContract.balanceOf(account);
+      console.log(balance.toString());
+      setDoGoodBalance(balance.toString());
+
+    } catch(error) {
+      console.error(error);
+    }
+  };
   
 
   const redeemNFTs = async () => {
     try{
       setLoading(true);
-      const transaction = await volunteerContract.redeemVolunteerNFT("1");
+      const transaction = await volunteerContract.redeemVolunteerNFT(selectNFT);
       const tx = await transaction.wait();
       console.log(tx);
-
+      
+      setTransaction(tx.transactionHash);
       setLoading(false);
     } catch(error) {
       console.error(error);
       setLoading(false);
     }
   };
+
+  const handleCheckBox = (e) => {
+    console.log(e);
+    setSelectNFT(e.target.value);
+  }
 
   return (
     <div>
@@ -93,13 +98,14 @@ function Overview({ account, volunteerContract }) {
       </Card>
       <Card>
         <Table columns={columns} dataSource={volunteerNFTs} />
-        <Button type="primary" htmlType="submit" className="primary-bg-color" onClick={redeemNFTs}>
+        <Button type="primary" htmlType="submit" className="primary-bg-color" onClick={redeemNFTs} loading={loading}>
           Redeem
         </Button>
+        {transaction && <p>Success, {transaction}</p>}
         <br />
         <br />
         <p>1 Volunteering hour can be redeemed for one DoGood token</p>
-        <p>DoGood Token Balance: 0</p>
+        <p>DoGood Token Balance: {goGoodBalance / 10 ** 18}</p>
       </Card>
     </div>
   )
