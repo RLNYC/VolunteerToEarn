@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Row, Col, Form, Select, Input, Button, Typography  } from 'antd';
+import { Web3Storage } from 'web3.storage';
+
+const client = new Web3Storage({ token: process.env.NEXT_PUBLIC_WEB3STORAGE_APIKEY });
 
 const layout = {
   labelCol: {
@@ -26,7 +29,21 @@ function MintNFT({ volunteerContract }) {
       setLoading(true);
       console.log(values);
 
-      const transaction = await volunteerContract.mintVolunteerNFT(values.volunteerHours, values.charities, values.volunteerAddress);
+      const volunteerData = JSON.stringify({ charities: values.charities, volunteerAddress:  values.volunteerAddress, volunteerHours: values.volunteerHours });
+      const blob = new Blob([volunteerData], {type: "text/plain"});
+      const fileToUpload = new File([ blob ], 'volunteerData.json');
+
+      const cid = await client.put([fileToUpload], {
+        onRootCidReady: localCid => {
+          console.log(`> 🔑 locally calculated Content ID: ${localCid} `)
+          console.log('> 📡 sending files to web3.storage ')
+        },
+        onStoredChunk: bytes => console.log(`> 🛰 sent ${bytes.toLocaleString()} bytes to web3.storage`)
+      })
+
+      console.log(`https://dweb.link/ipfs/${cid}`);
+
+      const transaction = await volunteerContract.mintVolunteerNFT(values.volunteerHours, values.charities, values.volunteerAddress, `https://dweb.link/ipfs/${cid}`);
       const tx = await transaction.wait();
       console.log(tx);
 

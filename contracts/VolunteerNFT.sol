@@ -18,6 +18,7 @@ contract VolunteerNFT is ERC721URIStorage {
     uint id;
     uint hour;
     string charity;
+    string url;
     bool isRedeemed;
     address recipient;
   }
@@ -26,6 +27,7 @@ contract VolunteerNFT is ERC721URIStorage {
     uint id,
     uint hour,
     string charity,
+    string url,
     address recipient
   );
 
@@ -33,15 +35,15 @@ contract VolunteerNFT is ERC721URIStorage {
      doGoodToken = _doGoodToken;
   }
 
-  function mintVolunteerNFT(uint _hours, string memory _charity, address _recipient) public payable returns (uint) {
+  function mintVolunteerNFT(uint _hours, string memory _charity, address _recipient, string memory _url) public payable returns (uint) {
     nftIds.increment();
     uint256 newNFTId = nftIds.current();
 
     _mint(_recipient, newNFTId);
-    //_setTokenURI(newNFTId, url);
+    _setTokenURI(newNFTId, _url);
 
-    volunteerDataList[newNFTId] = VolunteerData(newNFTId, _hours, _charity, false, _recipient);
-    emit VolunteerRecorded(newNFTId, _hours, _charity, _recipient);
+    volunteerDataList[newNFTId] = VolunteerData(newNFTId, _hours, _charity, _url, false, _recipient);
+    emit VolunteerRecorded(newNFTId, _hours, _charity, _url, _recipient);
 
     return newNFTId;
   }
