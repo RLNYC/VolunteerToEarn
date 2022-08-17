@@ -1,4 +1,5 @@
 import React from 'react';
+import { useRouter } from 'next/router';
 import { Row, Col, Card, Typography, Button } from 'antd';
 import { SmileOutlined, GiftOutlined, DollarCircleOutlined } from '@ant-design/icons';
 
@@ -17,9 +18,14 @@ const styles = {
     color: '#3AA628',
     fontSize: '22px',
   },
+  TableP: {
+    color: '#3AA628',
+  },
 };
 
 function App() {
+  const router = useRouter();
+  
   return <div style={styles.Landing}>
     <br />
     <br />
@@ -31,7 +37,7 @@ function App() {
         <p style={styles.SubHeader}>Volunteer</p>
         <p style={styles.SubHeader}>Earn DoGood tokens</p>
         <br />
-        <Button className="primary-bg-color" type="primary" size="large">
+        <Button className="primary-bg-color" type="primary" size="large" onClick={() => router.push(`/nonprofit`)}>
           Get STARTED
         </Button>
       </Col>
@@ -75,6 +81,70 @@ function App() {
         </Card>
       </Col>
     </Row>
+
+    <br />
+    <br />
+    <br />
+    <br />
+    <Typography.Title level={2} >
+      Volunteer Leadership Board
+    </Typography.Title>
+
+    <Row gutter={16}>
+      <Col className="gutter-row" xs={{ span: 32 }} md={{ span: 12 }}>
+        <Card>
+          <h2 style={styles.TableP}>Top 5 For The Week</h2>
+          <Row gutter={16}>
+            <Col className="gutter-row" xs={{ span: 12 }}>
+              <h3>Volunteer</h3>
+              <p>0x....dfs</p>
+              <p>0x....dfs</p>
+              <p>0x....dfs</p>
+            </Col>
+            <Col className="gutter-row" xs={{ span: 12 }}>
+              <h3>Hours</h3>
+              <p>20</p>
+              <p>17</p>
+              <p>11</p>
+            </Col>
+          </Row>
+        </Card>
+      </Col>
+      <Col className="gutter-row" xs={{ span: 32 }} md={{ span: 12 }}>
+        <Card>
+          <h2 style={styles.TableP}>Top 5</h2>
+          <Row gutter={16}>
+            <Col className="gutter-row" xs={{ span: 12 }}>
+              <h3>Volunteer</h3>
+              <p>0x....dfs</p>
+              <p>0x....dfs</p>
+              <p>0x....dfs</p>
+            </Col>
+            <Col className="gutter-row" xs={{ span: 12 }}>
+              <h3>Hours</h3>
+              <p>20</p>
+              <p>17</p>
+              <p>11</p>
+            </Col>
+          </Row>
+        </Card>
+      </Col>
+    </Row>
+
+    <br />
+    <br />
+
+    <center>
+      <Typography.Title level={2} >
+        Join DoGood
+      </Typography.Title>
+
+      <Button className="primary-bg-color" type="primary" size="large" onClick={() => router.push(`/nonprofit`)}>
+        Get STARTED
+      </Button>
+    </center>
+
+   
   </div>;
 }
 

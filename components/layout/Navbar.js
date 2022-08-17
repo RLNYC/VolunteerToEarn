@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { Layout, Menu, Button } from 'antd';
+import { Layout, Menu, Dropdown, Button } from 'antd';
 import { ethers } from 'ethers';
 import Web3Modal from 'web3modal';
 
@@ -30,13 +30,29 @@ const styles = {
   },
   logo: {
     width: '150px',
-    fontSize: '16px',
-    marginTop: '20px',
-    color: 'green'
   }
 };
 
 function Navbar({ account, setAccount, setDoGoodContract, setVolunteerContract }) {
+  const menu = (
+    <Menu
+      items={[
+        {
+          key: '1',
+          label: (
+            <Link href="/myaccount">My Account</Link>
+          ),
+        },
+        {
+          key: '2',
+          label: (
+            <p onClick={() => setAccount("")}>Disconnected</p>
+          ),
+        },
+      ]}
+    />
+  );
+
   const connetToWallet = async () => {
     const web3Modal = new Web3Modal();
     const connection = await web3Modal.connect();
@@ -56,7 +72,7 @@ function Navbar({ account, setAccount, setDoGoodContract, setVolunteerContract }
   
   return (
     <Layout.Header style={styles.header}>
-      <p style={styles.logo}>VolunteerToEarn</p>
+      <img src="/logo.jpg" alt="Logo" style={styles.logo} />
       <Menu
         theme="light"
         mode="horizontal"
@@ -75,22 +91,26 @@ function Navbar({ account, setAccount, setDoGoodContract, setVolunteerContract }
         <Menu.Item key="nonprofit">
           <Link href="/nonprofit">👥 Nonprofit</Link>
         </Menu.Item>
-        <Menu.Item key="myaccount">
-          <Link href="/myaccount">👥 My Account</Link>
-        </Menu.Item>
         <Menu.Item key="reward">
           <Link href="/reward">💰 Reward</Link>
         </Menu.Item>
       </Menu>
       <div style={styles.headerRight}>
-      <Button
-        className='primary-bg-color'
-        style={{ margin: '0 1rem'}}
-        type="primary"
-        onClick={connetToWallet}
-      >
-        { account ? account.substring(0, 7) + '...' + account.substring(35, 42) : "Connect to Wallet" }
-      </Button>
+      {account
+        ? <Dropdown overlay={menu} placement="bottomLeft" arrow>
+            <Button className='primary-bg-color'  type="primary">
+              {account.substring(0, 7) + '...' + account.substring(35, 42)}
+            </Button>
+          </Dropdown>
+        : <Button
+            className='primary-bg-color'
+            style={{ margin: '0 1rem'}}
+            type="primary"
+            onClick={connetToWallet}
+          >
+            Connect to Wallet
+          </Button>
+        }
       </div>
     </Layout.Header>
   )
