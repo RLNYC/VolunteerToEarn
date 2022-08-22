@@ -11,8 +11,12 @@ contract VolunteerNFT is ERC721URIStorage {
 
   using Counters for Counters.Counter;
   Counters.Counter public nftIds;
+  Counters.Counter public leaderboardTotal;
+  Counters.Counter public startFrom;
 
   mapping(uint => VolunteerData) public volunteerDataList;
+  mapping(uint => address) public idToAddress;
+  mapping(address => uint) public leaderboardHours;
 
   struct VolunteerData {
     uint id;
@@ -82,5 +86,26 @@ contract VolunteerNFT is ERC721URIStorage {
     }
 
     return items;   
+  }
+
+  function updateLeaderboard() public {
+    uint totalNFTCount = nftIds.current();
+    uint start = startFrom.current();
+
+    for (start + 1; start <= totalNFTCount; start++) {
+      startFrom.increment();
+
+      VolunteerData memory currentNFT = volunteerDataList[start];
+      address _recipient = idToAddress[start];
+      
+      if(leaderboardHours[_recipient] != 0) {
+        leaderboardHours[_recipient] += currentNFT.hour;
+      }
+      else {
+        leaderboardTotal.increment();
+        idToAddress[start] = currentNFT.recipient;
+        leaderboardHours[currentNFT.recipient] += currentNFT.hour;
+      }
+    }
   }
 }
