@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { Row, Col, Card, Typography, Button } from 'antd';
 import { SmileOutlined, GiftOutlined, DollarCircleOutlined } from '@ant-design/icons';
@@ -23,8 +23,40 @@ const styles = {
   },
 };
 
-function App() {
+function App({ volunteerContract }) {
   const router = useRouter();
+
+  const [leaders, setLeaders] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if(volunteerContract) getVolunteerLeaderBoard();
+  }, [volunteerContract])
+
+  const getVolunteerLeaderBoard = async () => {
+    try{
+      setLoading(true);
+      const leaderAmount = await volunteerContract.leaderboardTotal();
+      console.log(leaderAmount.toString());
+
+      let temp = [];
+      for (let i = 1; i < +leaderAmount.toString(); i++) {
+        const address = await volunteerContract.idToAddress(i);
+        console.log(address);
+
+        const hours = await volunteerContract.leaderboardHours(address);
+        console.log(hours.toString());
+
+        temp.push({ address: address, hours: hours.toString()});
+      }
+
+      setLeaders(temp);
+      setLoading(false);
+    } catch(error) {
+      console.error(error);
+      setLoading(false);
+    }
+  };
   
   return <div style={styles.Landing}>
     <br />
@@ -97,15 +129,15 @@ function App() {
           <Row gutter={16}>
             <Col className="gutter-row" xs={{ span: 12 }}>
               <h3>Volunteer</h3>
-              <p>0x....dfs</p>
-              <p>0x....dfs</p>
-              <p>0x....dfs</p>
+              {leaders.map((l, i) => (
+                <p key={i}>{l.address.substring(0, 5) + '...' + l.address.substring(37, 42)}</p>
+              ))}
             </Col>
             <Col className="gutter-row" xs={{ span: 12 }}>
               <h3>Hours</h3>
-              <p>20</p>
-              <p>17</p>
-              <p>11</p>
+              {leaders.map((l, i) => (
+                <p key={i}>{l.hours}</p>
+              ))}
             </Col>
           </Row>
         </Card>
@@ -116,15 +148,15 @@ function App() {
           <Row gutter={16}>
             <Col className="gutter-row" xs={{ span: 12 }}>
               <h3>Volunteer</h3>
-              <p>0x....dfs</p>
-              <p>0x....dfs</p>
-              <p>0x....dfs</p>
+              {leaders.map((l, i) => (
+                <p key={i}>{l.address.substring(0, 5) + '...' + l.address.substring(37, 42)}</p>
+              ))}
             </Col>
             <Col className="gutter-row" xs={{ span: 12 }}>
               <h3>Hours</h3>
-              <p>20</p>
-              <p>17</p>
-              <p>11</p>
+              {leaders.map((l, i) => (
+                <p key={i}>{l.hours}</p>
+              ))}
             </Col>
           </Row>
         </Card>
